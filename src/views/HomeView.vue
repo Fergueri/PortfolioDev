@@ -1,69 +1,79 @@
 <template>
-  <div class="home">
-  <div>
-    <svg class="square">
-    <rect
-        x="10"
-        y="10"
-        width="300"
-        height="300"
-        stroke="black"
-        fill="white"
-      />
-    </svg>
-    <svg id="path">
-      <rect
-        class="path"
-        x="10"
-        y="10"
-        width="30"
-        height="30"
-        stroke="black"
-        fill="transparent"
-      />
-      
-    </svg>
-  </div>
-  </div>
+  <div class="home"></div>
 </template>
 
 <script>
 import anime from "animejs/lib/anime.es.js";
+//import { collapsed } from "./state";
 //import LineAnime from "@/components/animations/LineAnime";
 export default {
   components: {
     //LineAnime,
   },
 
-  setup() {},
-  data() {
+  setup() {
     
   },
-  mounted() {
-    var myPath = anime.path("#path path");
-    anime({
-      targets: ".square",
-      translateX: myPath("x"),
-      translateY: myPath("y"),
-      // rotate: myPath('angle'),
-      easing: "linear",
-      duration: 2000,
-      loop: true,
-    });
+  data() {
+    return {
+      windowHeight: window.innerHeight,
+      windowWidth: window.innerWidth
+    }
   },
-  function() {},
+  mounted() {
+  this.$nextTick(() => {
+    window.addEventListener('resize', this.onResize);
+  })
+   var myPath = anime.path('#bigSvg path');
+
+   anime({
+    targets: '#emoji',
+    translateX: myPath('x'),
+    translateY: myPath('y'),
+    rotate: myPath('angle'),
+    easing: 'linear',
+    duration: 10000,
+    
+    loop: true,
+   })
+  
+    
+  },
+  beforeDestroy() { 
+    window.removeEventListener('resize', this.onResize); 
+  },
+  methods: {
+    onResize() {
+      this.windowHeight = window.innerHeight,
+      this.windowWidth = window.innerWidth,
+      
+      console.log(this.windowHeight),
+      console.log(this.windowWidth);
+
+    },
+    
+  },
 };
 </script>
 <style>
-#BigLine {
-  width: 100%;
-
-  height: 98vh;
+#emoji{
+  position: absolute;
+  top: -30px;
+  left: -25px;
 }
-
-.path {
+.wrapper{
+  position:relative;
+  
+}
+.myPath{
   stroke-width: 5px;
-  width: 90%;
-  height: 90%;
 }
+
+#outerSvg{
+  position: absolute;
+  stroke-width: 5px;
+}
+
+
+
 </style>
