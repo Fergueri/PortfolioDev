@@ -1,5 +1,9 @@
 <template>
-  <div class="home"></div>
+  <div class="home">
+    <div class="box">
+
+    </div>
+  </div>
 </template>
 
 <script>
@@ -24,19 +28,11 @@ export default {
   this.$nextTick(() => {
     window.addEventListener('resize', this.onResize);
   })
-   var myPath = anime.path('#bigSvg path');
-
-   anime({
-    targets: '#emoji',
-    translateX: myPath('x'),
-    translateY: myPath('y'),
-    rotate: myPath('angle'),
-    easing: 'linear',
-    duration: 10000,
-    
-    loop: true,
-   })
-  
+    anime({
+      targets: '.box',
+      rotate: 360,
+      loop: 3
+    })
     
   },
   beforeDestroy() { 
@@ -56,22 +52,26 @@ export default {
 };
 </script>
 <style>
-#emoji{
-  position: absolute;
-  top: -30px;
-  left: -25px;
-}
-.wrapper{
-  position:relative;
-  
-}
-.myPath{
-  stroke-width: 5px;
-}
+.home{
+  height:100%;
+  display: grid;
+  place-items: center;
 
-#outerSvg{
-  position: absolute;
-  stroke-width: 5px;
+}
+.box{
+  
+  width:60vmin;
+  height:50vmin;
+  border: 0.5rem solid transparent;
+  border-image:
+  conic-gradient(
+    
+    #d53e33 0deg 90deg,
+    #fbb300 90deg 180deg,
+    #377af5 180deg 270deg,
+    #399953 270deg 360deg
+  ) 1;
+
 }
 
 
