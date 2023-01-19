@@ -1,14 +1,14 @@
 <template>
   <div class="home">
-    <div class="box">
-
+    <div ref="path" class="path">
     </div>
   </div>
 </template>
 
 <script>
 import anime from "animejs/lib/anime.es.js";
-//import { collapsed } from "./state";
+import { ref, watch, unwatch } from "vue";
+import { sidebarWidth, collapsed } from "@/components/sidebar/state";
 //import LineAnime from "@/components/animations/LineAnime";
 export default {
   components: {
@@ -16,62 +16,93 @@ export default {
   },
 
   setup() {
-    
+
   },
-  data() {
-    return {
-      windowHeight: window.innerHeight,
-      windowWidth: window.innerWidth
+  data(){
+    return{
+      pathWidth: window.innerWidth - parseInt(sidebarWidth.value),
+      pathHeight: window.innerHeight,
+      boxDiv: document.createElement("div"),
+      
     }
   },
   mounted() {
-  this.$nextTick(() => {
-    window.addEventListener('resize', this.onResize);
-  })
-    anime({
-      targets: '.box',
-      rotate: 360,
-      loop: 3
-    })
+    this.box();
     
-  },
-  beforeDestroy() { 
-    window.removeEventListener('resize', this.onResize); 
-  },
-  methods: {
-    onResize() {
-      this.windowHeight = window.innerHeight,
-      this.windowWidth = window.innerWidth,
+    watch(() => this.pathWidth, (newVal) => {
+      this.updateResize();
       
-      console.log(this.windowHeight),
-      console.log(this.windowWidth);
+    });
+    watch(() => collapsed.value, (newVal) => {
+    this.updateResize();
+  });
+},
 
+  onUnmounted() {
+    unwatch(() => collapsed.value);
+    unwatch(() => this.pathWidth);
+  },
+
+  
+  methods: {
+    updateResize(){
+      this.animated();
+      this.pathWidth = window.innerWidth - parseInt(sidebarWidth.value);
+      this.pathHeight = window.innerHeight;
+      console.log(this.pathWidth);
+      console.log(this.pathHeight);
+    },
+    path() {
+      
+      this.$el.style.width = this.pathHeight + 'px';
+      this.$el.style.height = this.pathHeight + 'px';
+      
+    },
+    box() {
+      
+      const pathDiv = document.getElementsByClassName("path")[0];
+      this.boxDiv.className = "box";
+      this.boxDiv.style.width = "50px";
+      this.boxDiv.style.height = "50px";
+      this.boxDiv.style.backgroundColor = "black";
+      
+      pathDiv.appendChild(this.boxDiv);
+    },
+    animated(data) {
+      var pathPaddingX = this.pathWidth -70;
+      var pathPaddingY = this.pathHeight - 50;
+      anime.timeline({
+          targets: ".box",
+          duration: 2000, // 2 seconds
+          translate: [0,0],
+          loop: true,
+          easing: 'easeInOutQuad',
+          direction: 'normal'
+          }).add({
+            translateX: pathPaddingX,
+          }).add({
+            translateY: pathPaddingY,
+          }).add({
+            translateX: 0,
+          }).add({
+            translateY: 0,
+          })
     },
     
   },
+
+
+
 };
 </script>
 <style>
-.home{
-  height:100%;
-  display: grid;
-  place-items: center;
-
+.home {
+  height: 100%;
+  width: 100%;
 }
-.box{
-  
-  width:60vmin;
-  height:50vmin;
-  border: 0.5rem solid transparent;
-  border-image:
-  conic-gradient(
-    
-    #d53e33 0deg 90deg,
-    #fbb300 90deg 180deg,
-    #377af5 180deg 270deg,
-    #399953 270deg 360deg
-  ) 1;
-
+.path{
+  height: 100%;
+  width: 100%;
 }
 
 
